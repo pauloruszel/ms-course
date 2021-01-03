@@ -2,7 +2,10 @@ package com.pauloruszel.hrworker.resource;
 
 import com.pauloruszel.hrworker.domain.model.Worker;
 import com.pauloruszel.hrworker.repository.WorkerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/workers")
 public class WorkerResource {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(WorkerResource.class);
+
+    @Autowired
+    private Environment environment;
 
     @Autowired
     private WorkerRepository workerRepository;
@@ -25,6 +33,7 @@ public class WorkerResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<Worker> findById(@PathVariable Long id) {
+        LOGGER.info("PORT = " + environment.getProperty("local.server.port"));
         Optional<Worker> retorno = workerRepository.findById(id);
         return retorno.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
