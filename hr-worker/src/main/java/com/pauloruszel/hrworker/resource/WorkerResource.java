@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequestMapping("/workers")
 public class WorkerResource {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(WorkerResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkerResource.class);
 
     @Autowired
     private Environment environment;
@@ -33,7 +33,9 @@ public class WorkerResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<Worker> findById(@PathVariable Long id) {
-        LOGGER.info("PORT = " + environment.getProperty("local.server.port"));
+        final var format = String.format("PORT = %s", environment.getProperty("local.server.port"));
+        logger.info(format);
+
         Optional<Worker> retorno = workerRepository.findById(id);
         return retorno.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
